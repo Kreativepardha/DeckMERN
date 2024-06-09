@@ -3,12 +3,30 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import Deck from './models/Deck';
 import { config } from 'dotenv';
+import cors from 'cors';
 config();
 
 const app = express();
-app.use(express.json());
 const PORT = process.env.PORT || 8000 ;
+app.use(cors({
+        origin: "*"
+}));
+app.use(express.json());
 
+app.get("/decks", async (req,res) => {
+
+        const decks = await Deck.find();
+        res.json(decks)
+
+})
+
+app.delete('/decks/:deckId', async(req,res) => {
+                const deckId = req.params.deckId;
+
+               const deck = await Deck.findByIdAndDelete(deckId);
+               res.json(deck);
+
+})
 
 app.post("/decks", async (req,res) => {
     const newDeck = new Deck({
@@ -19,14 +37,6 @@ app.post("/decks", async (req,res) => {
 
 
 })
-
-
-
-
-
-
-
-
 
 
 
